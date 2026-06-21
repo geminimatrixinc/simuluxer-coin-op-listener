@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coin-Op Kiosk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page-wrap">
+      <section class="kiosk-card" aria-live="polite">
+        <h1>COIN-OP ACCESS</h1>
+        <p class="subtitle">Scan your player pass to begin</p>
+
+        <form id="arcadeForm" autocomplete="off">
+          <div class="field">
+            <label for="name">Player Name</label>
+            <input id="name" name="name" type="text" placeholder="Awaiting scan..." readonly required />
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="Awaiting scan..." readonly required />
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone or Member ID</label>
+            <input id="phone" name="phone" type="text" placeholder="Awaiting scan..." readonly required />
+          </div>
+
+          <button id="startBtn" type="submit">START SESSION</button>
+        </form>
+
+        <button id="startRacingBtn" class="race-btn" type="button" hidden>START RACING NOW</button>
+
+        <p id="status" class="status ready">Ready for scanner input...</p>
+        <pre id="sessionOutput" class="session-output" hidden></pre>
+      </section>
+
+      <section class="help-panel">
+        <h2>QR Payload Format</h2>
+        <code>{"name":"Alex Mercer","email":"alex@arcade.com","phone":"5550199"}</code>
+
+        <div class="dev-tools">
+          <h2>Test Scan (No Hardware)</h2>
+          <textarea id="testPayload" rows="4">{"name":"Test Player","email":"test@arcade.com","phone":"5550199"}</textarea>
+          <button id="simulateScanBtn" type="button">SIMULATE SCAN + START</button>
+          <label class="toggle">
+            <input id="strictTiming" type="checkbox" checked />
+            Enforce strict scanner timing
+          </label>
+
+          <h2>Scanner Diagnostics</h2>
+          <label class="toggle">
+            <input id="diagnosticsEnabled" type="checkbox" checked />
+            Enable diagnostics log
+          </label>
+          <div class="diag-grid">
+            <p>Buffer Length: <span id="diagBufferLength">0</span></p>
+            <p>Duration (ms): <span id="diagDuration">0</span></p>
+            <p>Speed (chars/s): <span id="diagSpeed">0</span></p>
+            <p>Classification: <span id="diagClass">idle</span></p>
+          </div>
+          <button id="clearDiagBtn" type="button">CLEAR DIAGNOSTICS</button>
+          <pre id="diagOutput" class="diag-output">Diagnostics ready.</pre>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
