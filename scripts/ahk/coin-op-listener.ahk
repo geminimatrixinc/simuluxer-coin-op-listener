@@ -26,11 +26,22 @@ StartInputLoop() {
 
 OnScanEnd(ih) {
     raw := ih.Input
+    reason := ih.EndReason
+    DebugLog("OnScanEnd reason=" . reason . " len=" . StrLen(raw) . " raw=" . raw)
+    ToolTip "SCAN CAPTURED`nReason: " . reason . "`nLength: " . StrLen(raw) . "`nData: " . SubStr(raw, 1, 80)
+    SetTimer () => ToolTip(), -4000
     StartInputLoop()
     if (StrLen(raw) < MIN_PAYLOAD_LEN) {
+        DebugLog("Rejected: too short (" . StrLen(raw) . " chars)")
         return
     }
     ProcessPayload(raw)
+}
+
+DebugLog(msg) {
+    logFile := A_ScriptDir . "\coin-op-debug.log"
+    stamp := FormatTime(, "yyyy-MM-dd HH:mm:ss")
+    FileAppend "[" . stamp . "] " . msg . "`n", logFile
 }
 
 StartInputLoop()
