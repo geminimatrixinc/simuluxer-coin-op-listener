@@ -34,7 +34,7 @@ global MIN_PAYLOAD_LEN  := 8
 ; so normal keyboard use is never affected.
 ~*{::
 {
-    ih := InputHook("V T1 L1024")
+    ih := InputHook("T1 L1024")
     ih.KeyOpt("{Enter}", "E")
     ih.Start()
     ih.Wait()
