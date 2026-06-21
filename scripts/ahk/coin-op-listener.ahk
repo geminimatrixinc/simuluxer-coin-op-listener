@@ -139,44 +139,18 @@ JsonEscape(s) {
     return s
 }
 
-; Minimal JSON parser sufficient for flat {"name":"..","email":"..","phone":".."} payloads.
+; Regex-based parser — handles any field order, spaces around colons,
+; and is not thrown off by other fields in the payload.
 ParseJson(text) {
     text := Trim(text)
-    if (SubStr(text, 1, 1) != "{" || SubStr(text, -1) != "}") {
-        throw Error("Not a JSON object")
-    }
-    inner := SubStr(text, 2, StrLen(text) - 2)
     result := Map()
-    pos := 1
-    while (pos <= StrLen(inner)) {
-        ; Find key opening quote.
-        kStart := InStr(inner, '"', , pos)
-        if (kStart = 0) {
-            break
+    for _, key in ["name", "email", "phone"] {
+        if RegExMatch(text, '"' . key . '"\s*:\s*"([^"]*)"', &m) {
+            result[key] := m[1]
+        } else {
+            throw Error("Missing field: " . key)
         }
-        kEnd := InStr(inner, '"', , kStart + 1)
-        if (kEnd = 0) {
-            break
-        }
-        key := SubStr(inner, kStart + 1, kEnd - kStart - 1)
-
-        ; Find colon then value opening quote.
-        colon := InStr(inner, ":", , kEnd + 1)
-        if (colon = 0) {
-            break
-        }
-        vStart := InStr(inner, '"', , colon + 1)
-        if (vStart = 0) {
-            break
-        }
-        vEnd := InStr(inner, '"', , vStart + 1)
-        if (vEnd = 0) {
-            break
-        }
-        value := SubStr(inner, vStart + 1, vEnd - vStart - 1)
-        result[key] := value
-
-        pos := vEnd + 1
     }
+    DebugLog("Parsed — name=" . result["name"] . " email=" . result["email"] . " phone=" . result["phone"])
     return result
 }
