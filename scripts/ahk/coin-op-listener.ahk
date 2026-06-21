@@ -115,9 +115,16 @@ SendToIRacing(data) {
     SendText data["email"]
 
     ; Pause so the user can review all fields before submitting.
-    Sleep 5000
+    Sleep 2000
+    ; Tab to DONE button and press it.
     Send "{Tab}"
-    Sleep 50
+    Sleep 100
+    Send "{Tab}"
+    Sleep 100
+    Send "{Tab}"
+    Sleep 100
+    Send "{Tab}"
+    Sleep 100
     Send "{Enter}"
     DebugLog("Fields sent — First: " . firstName . " Last: " . lastName . " Email: " . data["email"])
 }
