@@ -25,7 +25,6 @@ TraySetIcon(A_AhkPath, 2)
 A_IconTip := "Coin-Op Listener"
 
 global IRACING_TITLE := "iRacing.com Simulator"
-global NODE_LOG_URL  := "http://localhost:3000/api/session/start"
 global SCANNER_RESET_MS := 120
 global MIN_PAYLOAD_LEN  := 8
 
@@ -71,7 +70,6 @@ ProcessPayload(raw) {
         return
     }
 
-    LogToNode(data)
     SendToIRacing(data)
 }
 
@@ -123,24 +121,6 @@ SendToIRacing(data) {
     DebugLog("Fields sent — First: " . firstName . " Last: " . lastName . " Email: " . data["email"])
 }
 
-LogToNode(data) {
-    global NODE_LOG_URL
-    try {
-        body := '{"name":"' . JsonEscape(data["name"]) . '","email":"' . JsonEscape(data["email"]) . '","phone":"' . JsonEscape(data["phone"]) . '"}'
-        http := ComObject("WinHttp.WinHttpRequest.5.1")
-        http.Open("POST", NODE_LOG_URL, true)
-        http.SetRequestHeader("Content-Type", "application/json")
-        http.Send(body)
-    } catch {
-        ; Logging is best-effort.
-    }
-}
-
-JsonEscape(s) {
-    s := StrReplace(s, "\", "\\")
-    s := StrReplace(s, '"', '\"')
-    return s
-}
 
 ; Regex-based parser — handles any field order, spaces around colons,
 ; and is not thrown off by other fields in the payload.

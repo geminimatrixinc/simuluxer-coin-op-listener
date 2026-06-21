@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "ahk-listener": "scripts\\ahk\\start-listener-ahk.bat"
+    "ahk-listen": "scripts\\ahk\\start-listener-ahk.bat"
   },
   "dependencies": {
     "express": "^4.21.2"
