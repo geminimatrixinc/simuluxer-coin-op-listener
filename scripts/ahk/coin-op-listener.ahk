@@ -7,8 +7,22 @@
 ; Edit IRACING_TITLE if your iRacing window title differs.
 
 #Requires AutoHotkey v2.0
-#SingleInstance Force
+#SingleInstance Off
 Persistent
+
+if !A_IsAdmin {
+    ; Re-launch as admin so the hook works over elevated windows like iRacing.
+}
+
+; Exit if this script is already running.
+if WinExist("Coin-Op Listener ahk_class AutoHotkey") {
+    MsgBox "Coin-Op Listener is already running.`nCheck the system tray.", "Already Running", 48
+    ExitApp
+}
+
+A_TrayMenu.Delete()
+TraySetIcon(A_AhkPath, 2)
+A_IconTip := "Coin-Op Listener"
 
 global IRACING_TITLE := "iRacing.com Simulator"
 global NODE_LOG_URL  := "http://localhost:3000/api/session/start"
