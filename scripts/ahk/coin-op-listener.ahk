@@ -100,14 +100,14 @@ SendToIRacing(data) {
     Send "{Delete}"
     SendText firstName
     Send "{Tab}"
-    Sleep 2000
+    Sleep 500
 
     ; Clear and fill last name.
     Send "^a"
     Send "{Delete}"
     SendText lastName
     Send "{Tab}"
-    Sleep 2000
+    Sleep 500
 
     ; Clear and fill email.
     Send "^a"
@@ -115,7 +115,7 @@ SendToIRacing(data) {
     SendText data["email"]
 
     ; Pause so the user can review all fields before submitting.
-    Sleep 2000
+    Sleep 500
     Send "{Enter}"
     DebugLog("Fields sent — First: " . firstName . " Last: " . lastName . " Email: " . data["email"])
 }
