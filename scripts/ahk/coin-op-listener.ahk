@@ -32,7 +32,7 @@ global MIN_PAYLOAD_LEN  := 8
 ; Use InputHook to capture scanner bursts without registering individual
 ; character hotkeys (which break on AHK modifier symbols like ! # + ^ ~).
 StartInputLoop() {
-    ih := InputHook("T2 L1024")
+    ih := InputHook("V T2 L1024")
     ih.KeyOpt("{Enter}", "E")
     ih.OnEnd := OnScanEnd
     ih.Start()
