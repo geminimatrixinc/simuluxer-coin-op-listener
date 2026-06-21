@@ -93,14 +93,27 @@ SendToIRacing(data) {
 
     WinActivate IRACING_TITLE
     WinWaitActive IRACING_TITLE, , 2
-    Sleep 250
+    Sleep 500
+
+    ; Clear and fill first name.
+    Send "^a"
+    Send "{Delete}"
     SendText firstName
     Send "{Tab}"
     Sleep 2000
+
+    ; Clear and fill last name.
+    Send "^a"
+    Send "{Delete}"
     SendText lastName
     Send "{Tab}"
     Sleep 2000
+
+    ; Clear and fill email.
+    Send "^a"
+    Send "{Delete}"
     SendText data["email"]
+
     ; Pause so the user can review all fields before submitting.
     Sleep 5000
     Send "{Tab}"
