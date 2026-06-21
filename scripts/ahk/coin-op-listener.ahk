@@ -29,22 +29,20 @@ global NODE_LOG_URL  := "http://localhost:3000/api/session/start"
 global SCANNER_RESET_MS := 120
 global MIN_PAYLOAD_LEN  := 8
 
-; Use InputHook to capture scanner bursts without registering individual
-; character hotkeys (which break on AHK modifier symbols like ! # + ^ ~).
-StartInputLoop() {
-    ih := InputHook("V T2 L1024")
+; Wait for "{" — the start of our JSON payload — then capture the rest.
+; This means the hook is idle (not running) until a scan actually begins,
+; so normal keyboard use is never affected.
+~*{::
+{
+    ih := InputHook("V T1 L1024")
     ih.KeyOpt("{Enter}", "E")
-    ih.OnEnd := OnScanEnd
     ih.Start()
-}
-
-OnScanEnd(ih) {
-    raw := ih.Input
+    ih.Wait()
+    raw := "{" . ih.Input
     reason := ih.EndReason
     DebugLog("OnScanEnd reason=" . reason . " len=" . StrLen(raw) . " raw=" . raw)
     ToolTip "SCAN CAPTURED`nReason: " . reason . "`nLength: " . StrLen(raw) . "`nData: " . SubStr(raw, 1, 80)
     SetTimer () => ToolTip(), -4000
-    StartInputLoop()
     if (StrLen(raw) < MIN_PAYLOAD_LEN) {
         DebugLog("Rejected: too short (" . StrLen(raw) . " chars)")
         return
@@ -57,8 +55,6 @@ DebugLog(msg) {
     stamp := FormatTime(, "yyyy-MM-dd HH:mm:ss")
     FileAppend "[" . stamp . "] " . msg . "`n", logFile
 }
-
-StartInputLoop()
 
 ProcessPayload(raw) {
     try {
