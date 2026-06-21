@@ -96,13 +96,13 @@ SendToIRacing(data) {
     Sleep 250
     SendText firstName
     Send "{Tab}"
-    Sleep 50
+    Sleep 2000
     SendText lastName
     Send "{Tab}"
-    Sleep 50
+    Sleep 2000
     SendText data["email"]
-    Sleep 50
-    ; Click the DONE button to submit.
+    ; Pause so the user can review all fields before submitting.
+    Sleep 5000
     Send "{Tab}"
     Sleep 50
     Send "{Enter}"
