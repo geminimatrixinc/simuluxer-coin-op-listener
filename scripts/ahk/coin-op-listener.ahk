@@ -39,6 +39,9 @@ global MIN_PAYLOAD_LEN  := 8
     ih.Start()
     ih.Wait()
     raw := "{" . ih.Input
+    raw := StrReplace(raw, "`r", "")
+    raw := StrReplace(raw, "`n", "")
+    raw := Trim(raw)
     reason := ih.EndReason
     DebugLog("OnScanEnd reason=" . reason . " len=" . StrLen(raw) . " raw=" . raw)
     ToolTip "SCAN CAPTURED`nReason: " . reason . "`nLength: " . StrLen(raw) . "`nData: " . SubStr(raw, 1, 80)
