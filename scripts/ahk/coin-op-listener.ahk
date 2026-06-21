@@ -15,51 +15,25 @@ global NODE_LOG_URL  := "http://localhost:3000/api/session/start"
 global SCANNER_RESET_MS := 120
 global MIN_PAYLOAD_LEN  := 8
 
-global gBuffer := ""
-global gLastKeyTick := 0
-global gFirstKeyTick := 0
-
-; Hotkey-style global hook for visible characters and Enter.
-; AHK ~ prefix means the key still passes through to the focused app.
-~*Enter::OnEnter()
-
-; Capture all printable characters into our buffer.
-HookKey(key) {
-    global
-    now := A_TickCount
-    if (now - gLastKeyTick > SCANNER_RESET_MS) {
-        gBuffer := ""
-        gFirstKeyTick := now
-    }
-    if (gFirstKeyTick = 0) {
-        gFirstKeyTick := now
-    }
-    gLastKeyTick := now
-    gBuffer .= key
+; Use InputHook to capture scanner bursts without registering individual
+; character hotkeys (which break on AHK modifier symbols like ! # + ^ ~).
+StartInputLoop() {
+    ih := InputHook("V T2 L1024")
+    ih.KeyOpt("{Enter}", "E")
+    ih.OnEnd := OnScanEnd
+    ih.Start()
 }
 
-; Build hotkeys for every printable ASCII character.
-Loop 95 {
-    c := Chr(32 + A_Index - 1)
-    if (c = "") {
-        continue
-    }
-    Hotkey "~*" c, HookCharFactory(c)
-}
-
-HookCharFactory(c) {
-    return (*) => HookKey(c)
-}
-
-OnEnter(*) {
-    global gBuffer
-    payload := gBuffer
-    gBuffer := ""
-    if (StrLen(payload) < MIN_PAYLOAD_LEN) {
+OnScanEnd(ih) {
+    raw := ih.Input
+    StartInputLoop()
+    if (StrLen(raw) < MIN_PAYLOAD_LEN) {
         return
     }
-    ProcessPayload(payload)
+    ProcessPayload(raw)
 }
+
+StartInputLoop()
 
 ProcessPayload(raw) {
     try {
