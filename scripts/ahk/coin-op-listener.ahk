@@ -80,19 +80,37 @@ SendToIRacing(data) {
     global IRACING_TITLE
     if !WinExist(IRACING_TITLE) {
         TrayTip "Coin-Op Listener", "iRacing window not found.", 1
+        DebugLog("iRacing window not found.")
         return
     }
+
+    ; Split "First Last" into two parts on the first space.
+    fullName := data["name"]
+    spacePos := InStr(fullName, " ")
+    if (spacePos > 0) {
+        firstName := SubStr(fullName, 1, spacePos - 1)
+        lastName  := SubStr(fullName, spacePos + 1)
+    } else {
+        firstName := fullName
+        lastName  := ""
+    }
+
     WinActivate IRACING_TITLE
     WinWaitActive IRACING_TITLE, , 2
     Sleep 250
-    SendText data["name"]
+    SendText firstName
+    Send "{Tab}"
+    Sleep 50
+    SendText lastName
     Send "{Tab}"
     Sleep 50
     SendText data["email"]
+    Sleep 50
+    ; Click the DONE button to submit.
     Send "{Tab}"
     Sleep 50
-    SendText data["phone"]
-    Send "{Tab}"
+    Send "{Enter}"
+    DebugLog("Fields sent — First: " . firstName . " Last: " . lastName . " Email: " . data["email"])
 }
 
 LogToNode(data) {
